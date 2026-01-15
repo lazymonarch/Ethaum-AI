@@ -2,19 +2,17 @@ from pydantic import BaseModel
 from uuid import UUID
 from datetime import datetime
 
-class StartupCreate(BaseModel):
-    name: str
-    industry: str
-    arr_range: str
+class LaunchCreate(BaseModel):
+    title: str
+    tagline: str
     description: str
 
-class StartupResponse(BaseModel):
+class LaunchResponse(BaseModel):
     id: UUID
-    name: str
-    industry: str
-    arr_range: str
+    startup_id: UUID
+    title: str
     description: str
-    credibility_score: int | None
+    upvotes: int
     created_at: datetime
 
     class Config:
