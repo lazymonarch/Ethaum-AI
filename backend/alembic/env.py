@@ -29,7 +29,6 @@ config.set_main_option("sqlalchemy.url", database_url)
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# ✅ THIS FIXES AUTOGENERATE
 target_metadata = Base.metadata
 
 

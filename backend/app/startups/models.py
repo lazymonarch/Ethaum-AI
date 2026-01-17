@@ -1,7 +1,9 @@
 from sqlalchemy import Column, String, Integer, ForeignKey, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+
 from app.core.models import BaseModel
+from app.users.models import User
 
 class Startup(BaseModel):
     __tablename__ = "startups"
@@ -14,5 +16,4 @@ class Startup(BaseModel):
     description = Column(Text, nullable=False)
 
     credibility_score = Column(Integer, default=0)
-
-    user = relationship("User", backref="startup")
+    user = relationship(User, backref="startup")

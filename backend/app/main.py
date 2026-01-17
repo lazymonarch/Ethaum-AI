@@ -9,7 +9,7 @@ from app.startups.routes import router as startup_router
 from app.launches.routes import router as launch_router
 from app.reviews.routes import router as review_router
 from app.feedback.routes import router as enterprise_feedback_router
-
+from app.credibility.routes import router as credibility_router
 
 
 
@@ -43,3 +43,4 @@ app.include_router(startup_router)
 app.include_router(launch_router)
 app.include_router(review_router)
 app.include_router(enterprise_feedback_router)
+app.include_router(credibility_router)
