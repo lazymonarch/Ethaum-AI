@@ -25,8 +25,6 @@ def get_jwks():
 # ─────────────────────────────
 # Auth: get current user
 # ─────────────────────────────
-# app/core/security.py
-
 def get_current_user(authorization: str = Header(None)):
     if not authorization:
         raise HTTPException(status_code=401, detail="Missing Authorization header")
@@ -49,15 +47,24 @@ def get_current_user(authorization: str = Header(None)):
 
     role = payload.get("role")
     if not role:
-        raise HTTPException(status_code=403, detail="User role missing in JWT")
+        raise HTTPException(
+            status_code=403,
+            detail="User role missing in JWT",
+        )
+
+    clerk_user_id = payload.get("sub")
+    if not clerk_user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid token: subject missing",
+        )
 
     return {
-        # 🔑 IMPORTANT: external identity only
-        "clerk_user_id": payload["sub"],
+        # 🔑 External identity ONLY
+        "clerk_user_id": clerk_user_id,
         "email": payload.get("email"),
         "role": role,
     }
-
 
 
 # ─────────────────────────────

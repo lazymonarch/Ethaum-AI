@@ -18,7 +18,7 @@ def submit_review(
 ):
     db_user = get_or_create_user(
         db,
-        clerk_user_id=user["user_id"],
+        clerk_user_id=user["clerk_user_id"],
         email=user.get("email", "unknown@example.com"),
         role=user["role"],
     )

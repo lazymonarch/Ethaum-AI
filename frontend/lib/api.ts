@@ -45,20 +45,12 @@ export const getStartupById = async (id: string): Promise<Startup> => {
   return data;
 };
 
-export async function createStartup(data: {
-  name: string;
-  industry: string;
-  arr_range: string;
-  description: string;
-}) {
-
-  if (!api.defaults.headers.common["Authorization"]) {
-    throw new Error("Auth token not set before createStartup");
-  }
-
-  const response = await api.post("/startups/", data);
-  return response.data;
-}
+export const createStartup = async (
+  startupData: Partial<Startup>
+): Promise<Startup> => {
+  const { data } = await api.post("/startups", startupData);
+  return data;
+};
 
 export const updateStartup = async (
   updates: Partial<Startup>
@@ -90,7 +82,7 @@ export const getMyLaunches = async (): Promise<Launch[]> => {
 export const createLaunch = async (
   launchData: Partial<Launch>
 ): Promise<Launch> => {
-  const { data } = await api.post("/launches", launchData);
+  const { data } = await api.post("/launches/", launchData);
   return data;
 };
 
