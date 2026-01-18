@@ -18,7 +18,9 @@ _jwks_cache = None
 def get_jwks():
     global _jwks_cache
     if _jwks_cache is None:
-        _jwks_cache = requests.get(CLERK_JWKS_URL, timeout=5).json()
+        response = requests.get(CLERK_JWKS_URL, timeout=5)
+        response.raise_for_status()
+        _jwks_cache = response.json()
     return _jwks_cache
 
 

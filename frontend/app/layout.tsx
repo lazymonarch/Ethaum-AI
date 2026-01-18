@@ -16,7 +16,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+
+      signUpForceRedirectUrl="/post-signup"
+      signInForceRedirectUrl="/dashboard"
+    >
       <html lang="en">
         <body className="antialiased bg-gray-50">{children}</body>
       </html>

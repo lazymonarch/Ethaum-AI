@@ -1,4 +1,4 @@
-// components/Navbar.tsx - Role-aware navigation
+// components/Navbar.tsx
 
 "use client";
 
@@ -9,7 +9,13 @@ import { usePathname } from "next/navigation";
 export default function Navbar() {
   const { user } = useUser();
   const pathname = usePathname();
-  const role = user?.publicMetadata?.role as string;
+
+  // ✅ Single source of truth (as YOU observed correctly)
+  const role = user?.unsafeMetadata?.role as
+    | "startup"
+    | "enterprise"
+    | "admin"
+    | undefined;
 
   const isActive = (path: string) => pathname === path;
 
@@ -17,83 +23,74 @@ export default function Navbar() {
     <nav className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
+          {/* Left */}
           <div className="flex items-center">
-            <Link href="/dashboard" className="flex items-center">
-              <span className="text-xl font-bold text-gray-900">
-                EthAum.ai
-              </span>
+            <Link href="/dashboard" className="text-xl font-bold text-gray-900">
+              EthAum.ai
             </Link>
 
             <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
-              <Link
-                href="/dashboard"
-                className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
-                  isActive("/dashboard")
-                    ? "text-blue-600 border-b-2 border-blue-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
+              <NavLink href="/dashboard" active={isActive("/dashboard")}>
                 Dashboard
-              </Link>
+              </NavLink>
 
               {role === "startup" && (
                 <>
-                  <Link
-                    href="/launches"
-                    className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
-                      isActive("/launches")
-                        ? "text-blue-600 border-b-2 border-blue-600"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
+                  <NavLink href="/launches" active={isActive("/launches")}>
                     Launches
-                  </Link>
-                  <Link
-                    href="/reviews"
-                    className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
-                      isActive("/reviews")
-                        ? "text-blue-600 border-b-2 border-blue-600"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
+                  </NavLink>
+                  <NavLink href="/reviews" active={isActive("/reviews")}>
                     Reviews
-                  </Link>
+                  </NavLink>
                 </>
               )}
 
               {role === "enterprise" && (
-                <Link
-                  href="/startups"
-                  className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
-                    isActive("/startups")
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
+                <NavLink href="/startups" active={isActive("/startups")}>
                   Discover Startups
-                </Link>
+                </NavLink>
               )}
 
               {role === "admin" && (
-                <Link
-                  href="/admin"
-                  className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
-                    isActive("/admin")
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
+                <NavLink href="/admin" active={isActive("/admin")}>
                   Admin
-                </Link>
+                </NavLink>
               )}
             </div>
           </div>
 
+          {/* Right */}
           <div className="flex items-center">
-            <UserButton afterSignOutUrl="/" />
+            {/* ✅ NO props — this is correct */}
+            <UserButton />
           </div>
         </div>
       </div>
     </nav>
+  );
+}
+
+/* -------------------- */
+/* NavLink helper      */
+/* -------------------- */
+function NavLink({
+  href,
+  active,
+  children,
+}: {
+  href: string;
+  active: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${active
+          ? "text-blue-600 border-b-2 border-blue-600"
+          : "text-gray-500 hover:text-gray-700"
+        }`}
+    >
+      {children}
+    </Link>
   );
 }

@@ -1,40 +1,33 @@
-// middleware.ts - Auth middleware with role-based routing
-
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const isPublicRoute = createRouteMatcher([
+const isPublic = createRouteMatcher([
   "/",
   "/sign-in(.*)",
   "/sign-up(.*)",
-  "/api/webhooks(.*)",
+  "/post-signup",
 ]);
 
-export default clerkMiddleware(async (auth, req) => {
-  const { userId, sessionClaims } = await auth();
+export default clerkMiddleware((auth, req) => {
+  const { userId, sessionClaims } = auth();
 
-  // Allow public routes
-  if (isPublicRoute(req)) {
+  if (isPublic(req)) {
     return NextResponse.next();
   }
 
-  // Require authentication for protected routes
   if (!userId) {
-    const signInUrl = new URL("/sign-in", req.url);
-    signInUrl.searchParams.set("redirect_url", req.url);
-    return NextResponse.redirect(signInUrl);
+    return NextResponse.redirect(new URL("/sign-in", req.url));
   }
 
-  // Role-based routing could be added here if needed
-  // For now, all authenticated users can access all routes
-  // Frontend components will handle role-specific UI
+  const role = (sessionClaims as any)?.role as string | undefined;
+
+  if (req.nextUrl.pathname === "/dashboard" && role === "enterprise") {
+    return NextResponse.redirect(new URL("/startups", req.url));
+  }
 
   return NextResponse.next();
 });
 
 export const config = {
-  matcher: [
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    "/(api|trpc)(.*)",
-  ],
+  matcher: ["/((?!_next|.*\\.(?:css|js|png|jpg|jpeg|svg|ico)).*)"],
 };
