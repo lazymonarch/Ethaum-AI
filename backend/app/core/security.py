@@ -1,4 +1,4 @@
-from fastapi import Header, HTTPException, Depends
+from fastapi import Header, HTTPException, Depends, Request
 from jose import jwt
 import requests
 import os
@@ -27,7 +27,14 @@ def get_jwks():
 # ─────────────────────────────
 # Auth: get current user
 # ─────────────────────────────
-def get_current_user(authorization: str = Header(None)):
+def get_current_user(
+    request: Request,
+    authorization: str = Header(None),
+):
+    # ✅ Allow CORS preflight requests
+    if request.method == "OPTIONS":
+        return None
+
     if not authorization:
         raise HTTPException(status_code=401, detail="Missing Authorization header")
 
@@ -49,20 +56,13 @@ def get_current_user(authorization: str = Header(None)):
 
     role = payload.get("role")
     if not role:
-        raise HTTPException(
-            status_code=403,
-            detail="User role missing in JWT",
-        )
+        raise HTTPException(status_code=403, detail="User role missing in JWT")
 
     clerk_user_id = payload.get("sub")
     if not clerk_user_id:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid token: subject missing",
-        )
+        raise HTTPException(status_code=401, detail="Invalid token: subject missing")
 
     return {
-        # 🔑 External identity ONLY
         "clerk_user_id": clerk_user_id,
         "email": payload.get("email"),
         "role": role,
@@ -74,6 +74,9 @@ def get_current_user(authorization: str = Header(None)):
 # ─────────────────────────────
 def require_role(required_role: str):
     def role_checker(user=Depends(get_current_user)):
+        if user is None:
+            return None  # OPTIONS request
+
         if user["role"] != required_role:
             raise HTTPException(
                 status_code=403,
@@ -82,3 +85,4 @@ def require_role(required_role: str):
         return user
 
     return role_checker
+
