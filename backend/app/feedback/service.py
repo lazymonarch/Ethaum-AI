@@ -35,3 +35,10 @@ def verify_feedback(db: Session, feedback_id):
     calculate_credibility(db, feedback.startup)
     
     return feedback
+
+def get_feedback_by_enterprise(db: Session, enterprise_user_id: int):
+    return (
+        db.query(EnterpriseFeedback)
+        .filter(EnterpriseFeedback.enterprise_id == enterprise_user_id)
+        .all()
+    )

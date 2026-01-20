@@ -17,3 +17,7 @@ def create_startup(db: Session, user_id, data):
 
 def get_startup_by_user(db: Session, user_id):
     return db.query(Startup).filter_by(user_id=user_id).first()
+
+
+def get_all_startups(db: Session):
+    return db.query(Startup).all()

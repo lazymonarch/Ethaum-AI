@@ -9,6 +9,7 @@ from app.startups.service import create_startup, get_startup_by_user
 from app.startups.credibility import calculate_credibility
 from app.startups.credibility_schemas import CredibilityOut
 from app.users.service import get_or_create_user
+from app.startups.service import get_all_startups
 
 router = APIRouter(prefix="/startups", tags=["startups"])
 
@@ -32,6 +33,17 @@ def create_my_startup(
         raise HTTPException(status_code=400, detail="Startup already exists")
 
     return create_startup(db, db_user.id, payload)
+
+@router.get("", response_model=list[StartupResponse])
+def list_startups(
+    db: Session = Depends(get_db),
+    user=Depends(get_current_user),
+):
+    # Allow enterprise + admin to browse
+    if user["role"] not in ("enterprise", "admin"):
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    return get_all_startups(db)
 
 
 @router.get("/me", response_model=StartupResponse)

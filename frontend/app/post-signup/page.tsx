@@ -21,7 +21,7 @@ export default function PostSignupPage() {
             return;
         }
 
-        router.replace(role === "startup" ? "/dashboard" : "/startups");
+        router.replace("/dashboard");
     }, [isLoaded, user, router]);
 
     return (

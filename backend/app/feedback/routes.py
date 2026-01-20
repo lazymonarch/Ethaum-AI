@@ -10,11 +10,27 @@ from app.feedback.schemas import (
 )
 from app.feedback.service import (
     create_feedback,
+    get_feedback_by_enterprise,
     list_verified_feedback,
     verify_feedback,
 )
 
 router = APIRouter(prefix="/enterprise-feedback", tags=["enterprise-feedback"])
+
+@router.get("/me")
+def get_my_feedback(
+    db: Session = Depends(get_db),
+    user=Depends(require_role("enterprise")),
+):
+    db_user = get_or_create_user(
+        db,
+        clerk_user_id=user["clerk_user_id"],
+        email=user["email"],
+        role=user["role"],
+    )
+
+    return get_feedback_by_enterprise(db, db_user.id)
+
 
 @router.post("/", response_model=EnterpriseFeedbackResponse)
 def submit_enterprise_feedback(

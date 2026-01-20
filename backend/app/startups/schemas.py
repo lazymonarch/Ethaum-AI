@@ -22,7 +22,7 @@ class StartupResponse(BaseModel):
     id: UUID
     name: str
     industry: str
-    arr_range: ARRRange
+    arr_range: str
     description: str
     credibility_score: int | None
     created_at: datetime

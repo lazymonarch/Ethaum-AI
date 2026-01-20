@@ -1,9 +1,10 @@
-// app/dashboard/page.tsx
+// app/dashboard/page.tsx*
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import StartupDashboard from "@/components/startup/StartupDashboard";
+import EnterpriseDashboard from "@/components/enterprise/EnterpriseDashboard";
 
 export default async function DashboardPage() {
   const { userId, getToken } = await auth();
@@ -33,11 +34,10 @@ export default async function DashboardPage() {
 
         {role === "startup" && <StartupDashboard token={token} />}
 
-        {role === "enterprise" && (
-          <div className="mt-8 bg-blue-50 p-6 rounded-lg">
-            Enterprise dashboard coming next.
-          </div>
+        {role === "enterprise" && token && (
+          <EnterpriseDashboard token={token} />
         )}
+
       </div>
     </div>
   );

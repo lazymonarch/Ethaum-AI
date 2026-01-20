@@ -82,7 +82,7 @@ export const getMyLaunches = async (): Promise<Launch[]> => {
 export const createLaunch = async (
   launchData: Partial<Launch>
 ): Promise<Launch> => {
-  const { data } = await api.post("/launches/", launchData);
+  const { data } = await api.post("/launches", launchData);
   return data;
 };
 
@@ -134,7 +134,7 @@ export const submitFeedback = async (
 
 export const getMyCredibilityScore =
   async (): Promise<CredibilityScoreResponse> => {
-    const { data } = await api.get("/credibility-score/");
+    const { data } = await api.get("/credibility-score");
     return data;
   };
 
