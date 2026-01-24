@@ -77,7 +77,10 @@ def get_credibility_score(db: Session, startup_id):
     # -------------------------------
     feedback = (
         db.query(EnterpriseFeedback)
-        .filter(EnterpriseFeedback.startup_id == startup.id)
+        .filter(
+            EnterpriseFeedback.startup_id == startup.id,
+            EnterpriseFeedback.verified == True,
+        )
         .all()
     )
 

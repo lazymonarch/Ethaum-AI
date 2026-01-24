@@ -1,13 +1,15 @@
+//frontend/components/enterprise/EnterpriseDashboard.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
 import {
     setAuthToken,
     getAllStartups,
+    getMyEnterpriseFeedback,
 } from "@/lib/api";
-import api from "@/lib/api";
 import Link from "next/link";
-import type { Startup, EnterpriseFeedback } from "@/types";
+import type { Startup } from "@/types";
 
 interface Props {
     token: string;
@@ -28,16 +30,14 @@ export default function EnterpriseDashboard({ token }: Props) {
                 setStartups(allStartups);
 
                 // 2️⃣ Fetch ONLY this enterprise's feedback
-                const { data: myFeedback } = await api.get<EnterpriseFeedback[]>(
-                    "/enterprise-feedback/me"
-                );
+                const myFeedback = await getMyEnterpriseFeedback();
 
                 // 3️⃣ Count unique startups reviewed by THIS enterprise
-                const uniqueStartupIds = new Set(
+                const reviewedStartupIds = new Set(
                     myFeedback.map((f) => f.startup_id)
                 );
 
-                setReviewedCount(uniqueStartupIds.size);
+                setReviewedCount(reviewedStartupIds.size);
             } catch (err) {
                 console.error("Failed to load enterprise dashboard:", err);
             } finally {

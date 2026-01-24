@@ -10,6 +10,8 @@ from app.startups.credibility import calculate_credibility
 from app.startups.credibility_schemas import CredibilityOut
 from app.users.service import get_or_create_user
 from app.startups.service import get_all_startups
+from app.startups.service import discover_startups
+from app.core.security import require_role
 
 router = APIRouter(prefix="/startups", tags=["startups"])
 
@@ -83,3 +85,21 @@ def get_my_credibility(
         raise HTTPException(status_code=404, detail="Startup not found")
 
     return calculate_credibility(db, startup)
+
+
+@router.get("/discover", response_model=list[StartupResponse])
+def discover_startups_endpoint(
+    industry: str | None = None,
+    arr_range: str | None = None,
+    min_score: int | None = None,
+    sort: str = "credibility",
+    db: Session = Depends(get_db),
+    user=Depends(require_role("enterprise")),
+):
+    return discover_startups(
+        db=db,
+        industry=industry,
+        arr_range=arr_range,
+        min_score=min_score,
+        sort=sort,
+    )

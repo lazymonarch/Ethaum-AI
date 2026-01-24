@@ -1,3 +1,5 @@
+//frontend/components/enterprise/SubmitFeedbackModal.tsx
+
 "use client";
 
 import { useState } from "react";
@@ -80,8 +82,8 @@ export default function SubmitFeedbackModal({
                   key={star}
                   onClick={() => setRating(star)}
                   className={`w-6 h-6 cursor-pointer ${star <= rating
-                      ? "text-yellow-500 fill-yellow-500"
-                      : "text-gray-300"
+                    ? "text-yellow-500 fill-yellow-500"
+                    : "text-gray-300"
                     }`}
                 />
               ))}

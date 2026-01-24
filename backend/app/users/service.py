@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.users.models import User
-
+import uuid
 
 def get_or_create_user(
     db: Session,
@@ -13,6 +13,7 @@ def get_or_create_user(
         return user
 
     user = User(
+        id=uuid.uuid4(),         
         clerk_user_id=clerk_user_id,
         email=email,
         role=role,

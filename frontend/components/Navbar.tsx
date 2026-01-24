@@ -1,16 +1,17 @@
-// components/Navbar.tsx
+//frontend/components/Navbar.tsx
 
 "use client";
 
 import { UserButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { User } from "lucide-react";
 
 export default function Navbar() {
   const { user } = useUser();
   const pathname = usePathname();
+  const router = useRouter();
 
-  // ✅ Single source of truth (as YOU observed correctly)
   const role = user?.unsafeMetadata?.role as
     | "startup"
     | "enterprise"
@@ -61,8 +62,15 @@ export default function Navbar() {
 
           {/* Right */}
           <div className="flex items-center">
-            {/* ✅ NO props — this is correct */}
-            <UserButton />
+            <UserButton>
+              <UserButton.MenuItems>
+                <UserButton.Action
+                  label="Profile"
+                  labelIcon={<User className="w-4 h-4" />} // ✅ REQUIRED
+                  onClick={() => router.push("/profile")}
+                />
+              </UserButton.MenuItems>
+            </UserButton>
           </div>
         </div>
       </div>
@@ -86,8 +94,8 @@ function NavLink({
     <Link
       href={href}
       className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${active
-          ? "text-blue-600 border-b-2 border-blue-600"
-          : "text-gray-500 hover:text-gray-700"
+        ? "text-blue-600 border-b-2 border-blue-600"
+        : "text-gray-500 hover:text-gray-700"
         }`}
     >
       {children}

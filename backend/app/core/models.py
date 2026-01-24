@@ -2,7 +2,8 @@ import uuid
 from sqlalchemy import Column, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
-
+from app.users.models import User
+from app.enterprises.models import EnterpriseProfile
 from app.core.database import Base
 
 

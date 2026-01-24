@@ -146,3 +146,42 @@ export const getStartupCredibilityScore = async (
 };
 
 export default api;
+
+
+// --- ENTERPRISE PROFILE ENDPOINTS ---
+
+export interface EnterpriseProfile {
+  id: string;
+  company_name: string;
+  industry: string;
+  company_size: string;
+  location: string;
+  interested_industries: string[];
+  preferred_arr_ranges: string[];
+  engagement_stage?: string;
+}
+
+export const getMyEnterpriseProfile = async (): Promise<EnterpriseProfile> => {
+  const { data } = await api.get("/enterprise-profile/me");
+  return data;
+};
+
+export const createEnterpriseProfile = async (
+  payload: Omit<EnterpriseProfile, "id">
+): Promise<EnterpriseProfile> => {
+  const { data } = await api.post("/enterprise-profile/me", payload);
+  return data;
+};
+
+export const updateEnterpriseProfile = async (
+  payload: Partial<EnterpriseProfile>
+): Promise<EnterpriseProfile> => {
+  const { data } = await api.put("/enterprise-profile/me", payload);
+  return data;
+};
+
+
+export const getMyEnterpriseFeedback = async (): Promise<EnterpriseFeedback[]> => {
+  const { data } = await api.get("/enterprise-feedback/me");
+  return data;
+};

@@ -21,3 +21,28 @@ def get_startup_by_user(db: Session, user_id):
 
 def get_all_startups(db: Session):
     return db.query(Startup).all()
+
+def discover_startups(
+    db,
+    industry=None,
+    arr_range=None,
+    min_score=None,
+    sort="credibility",
+):
+    query = db.query(Startup)
+
+    if industry:
+        query = query.filter(Startup.industry == industry)
+
+    if arr_range:
+        query = query.filter(Startup.arr_range == arr_range)
+
+    if min_score:
+        query = query.filter(Startup.credibility_score >= min_score)
+
+    if sort == "recent":
+        query = query.order_by(Startup.created_at.desc())
+    else:
+        query = query.order_by(Startup.credibility_score.desc())
+
+    return query.all()

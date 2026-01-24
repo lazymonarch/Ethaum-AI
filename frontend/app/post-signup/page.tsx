@@ -1,3 +1,5 @@
+//frontend/app/post-signup/page.tsx
+
 "use client";
 
 import { useUser } from "@clerk/nextjs";
